@@ -1,0 +1,58 @@
+description = 'NiFi Dynamic Script Executor'
+
+group = 'nifi-scripting'
+
+apply plugin: 'idea'
+//apply plugin: 'java'
+apply plugin: 'groovy'
+apply plugin: 'de.fanero.gradle.plugin.nar'
+
+sourceCompatibility=1.8
+targetCompatibility=1.8
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven {
+            url 'http://dl.bintray.com/sponiro/gradle-plugins'
+        }
+    }
+    dependencies {
+        classpath group: 'de.fanero.gradle.plugin.nar', name: 'gradle-nar-plugin', version: '0.1'
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // compile 'commons-io:commons-io:2.2'
+    compile 'org.codehaus.groovy:groovy-all:2.4.5'
+    compile 'org.apache.nifi:nifi-api:0.3.0'
+    compile 'org.apache.nifi:nifi-processor-utils:0.3.0'
+
+    testCompile 'org.apache.nifi:nifi-mock:0.3.0'
+    testCompile 'junit:junit:4.+'
+    testCompile 'org.slf4j:slf4j-simple:1.7.12'
+}
+
+task deploy(dependsOn: 'nar', type: Copy) {
+  description 'Deploys assembled "nar" archive to Apache NiFi installation. Will call "nar" task to assemble nar archive.'
+  if (project.hasProperty('nifi_home')) {
+     from 'build/libs/'
+     into nifi_home + '/lib'
+     include ('*.nar')
+     println("Deploying '" + project.name + "' to " + (nifi_home + '/lib'))
+  } 
+  else {
+     if (gradle.startParameter.taskNames.toString().contains('deploy')){
+        throw new java.lang.IllegalArgumentException("Failed to determine the value of 'nifi_home' property. Possible reasons: " +
+       "Property is not defined. You can define it in either 'gradle.properties' file or via command line argument 'gradlew deploy -Pnifi_home=/foo/bar/nifi'.")
+     }
+  }
+}
+
+task wrapper(type: Wrapper) {
+    description = 'Generates gradlew[.bat] scripts'
+}
