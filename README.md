@@ -8,7 +8,7 @@ Work-in-Progress
 The goal of this project is to enable processing NiFi *FlowFiles* using scripting languages.   
    
 1. **ExecuteJavaScript**  Usage: JSON -> Mapping -> JSON
-2. **ExecuteGroovy**      
+2. **ExecuteGroovy**      execute supplied groovy script with arguments configured. 
  
 ### Install
 1. Manual: Download [Apache NiFi](https://nifi.apache.org/download.html) binaries and unpack to a folder. 
@@ -38,7 +38,10 @@ nifi status
 nifi stop 
 # Working Directory: /usr/local/Cellar/nifi/0.3.0/libexec
 ```
-### Test
+### Testing 
+
+Upload the [sample flow](./scripting-flow.xml) into NiFi and use [test data](.src/test/resources/test.json) and below javascript for testing:
+
 ```js
 function convert(val) {
     var g = JSON.parse(val);
@@ -65,8 +68,10 @@ flowFile = session.putAttribute(flowFile, "JS", 2222 );
 ```
 
 ### TODO
-
+1. Support adding popular javaScript libraries (lodash.js, moment.js etc.,) via processor configuration.
+ 
 
 ### Reference 
 1. [Groovy Script](http://www.groovy-lang.org/integrating.html)
 2. [java8-nashorn-tutorial](http://winterbe.com/posts/2014/04/05/java8-nashorn-tutorial/)
+3. [Mapping Complex JSON Structures With JDK8 Nashorn](https://dzone.com/articles/mapping-complex-json-structures-with-jdk8-nashorn)
