@@ -40,7 +40,7 @@ nifi stop
 ```
 ### Testing 
 
-Upload the [sample flow](./scripting-flow.xml) into NiFi and use [test data](.src/test/resources/test.json) and below javascript for testing:
+Upload the [sample flow](./scripting-flow.xml) into NiFi and use [test data](./src/test/resources/test.json) and below javascript for testing:
 
 ```js
 function convert(val) {
