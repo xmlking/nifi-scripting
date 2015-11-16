@@ -16,7 +16,11 @@ public class NiFiUtils {
     }
 
     public FlowFile stringToFlowFile(String flowString, ProcessSession session) {
-        FlowFile ff = session.create();
+        return stringToFlowFile(flowString, session, null);
+    }
+
+    public FlowFile stringToFlowFile(String flowString, ProcessSession session, FlowFile flowFile) {
+        FlowFile ff = (flowFile == null) ? session.create() : session.create(flowFile);
         return session.write(ff, out -> {
             try (OutputStream outputStream = new BufferedOutputStream(out)) {
                 outputStream.write(flowString.getBytes(StandardCharsets.UTF_8));
