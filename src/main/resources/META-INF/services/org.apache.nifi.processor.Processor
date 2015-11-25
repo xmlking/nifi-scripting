@@ -13,4 +13,5 @@
 # limitations under the License.
 #
 com.crossbusiness.nifi.processors.ExecuteGroovy
+com.crossbusiness.nifi.processors.ExecuteRemoteProcess
 com.crossbusiness.nifi.processors.ExecuteJavaScript

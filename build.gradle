@@ -3,7 +3,6 @@ description = 'NiFi Dynamic Script Executor'
 group = 'nifi-scripting'
 
 apply plugin: 'idea'
-//apply plugin: 'java'
 apply plugin: 'groovy'
 apply plugin: 'de.fanero.gradle.plugin.nar'
 
@@ -27,7 +26,7 @@ repositories {
 }
 
 dependencies {
-    // compile 'commons-io:commons-io:2.2'
+    compile 'org.hidetake:groovy-ssh:1.1.8'
     compile 'org.codehaus.groovy:groovy-all:2.4.5'
     compile 'org.apache.nifi:nifi-api:0.3.0'
     compile 'org.apache.nifi:nifi-processor-utils:0.3.0'
@@ -56,3 +55,7 @@ task deploy(dependsOn: 'nar', type: Copy) {
 task wrapper(type: Wrapper) {
     description = 'Generates gradlew[.bat] scripts'
 }
+
+// TODO: Temp Fix
+sourceSets.main.java.srcDirs = []
+sourceSets.main.groovy.srcDirs += ["src/main/java"]
