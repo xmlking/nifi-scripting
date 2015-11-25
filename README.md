@@ -85,6 +85,7 @@ remotes {
         user = 'sumo'
         knownHosts = allowAnyHosts
     }
+}
 ```
 
 **Run DSL**
