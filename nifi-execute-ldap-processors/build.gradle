@@ -1,0 +1,18 @@
+description = 'NiFi Execute LDAP Script Processor'
+
+apply plugin: 'groovy'
+
+dependencies {
+    provided project(':nifi-lang-groovy')
+
+//    compile "org.apache.directory:groovyldap:latest"
+//    compile "org.apache.directory.api:api-all:1.0.0-M32"
+    compile fileTree(dir: 'lib', include: '*.jar')
+
+
+    nar "org.apache.nifi:nifi-lang-groovy:${version}"
+}
+
+// TODO: Temp Fix
+//sourceSets.main.java.srcDirs = []
+//sourceSets.main.groovy.srcDirs += ["src/main/java"]

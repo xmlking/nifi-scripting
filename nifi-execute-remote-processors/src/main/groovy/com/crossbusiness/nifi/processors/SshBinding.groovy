@@ -1,5 +1,8 @@
 package com.crossbusiness.nifi.processors
 
+import groovy.transform.CompileStatic
+
+@CompileStatic
 class SshBinding extends Binding{
     def builder
 

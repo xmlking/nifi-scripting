@@ -3,6 +3,8 @@ package com.crossbusiness.nifi.processors;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;
+import org.apache.nifi.annotation.documentation.CapabilityDescription;
+import org.apache.nifi.annotation.documentation.Tags;
 import org.apache.nifi.annotation.lifecycle.OnScheduled;
 import org.apache.nifi.components.PropertyDescriptor;
 import org.apache.nifi.components.Validator;
@@ -15,6 +17,8 @@ import org.apache.nifi.util.StopWatch;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
+@Tags({"command", "process", "source", "invoke", "groovy", "script"})
+@CapabilityDescription("Runs Groovy script. User supplied script can assign any data to flowFile that can be passed to next processor.")
 public class ExecuteGroovy extends AbstractProcessor {
 
     private Set<Relationship> relationships;
