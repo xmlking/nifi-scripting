@@ -1,0 +1,9 @@
+description = 'NiFi Groovy Script Executor Processor'
+
+apply plugin: 'groovy'
+
+dependencies {
+    provided project(':nifi-lang-groovy')
+
+    nar "org.apache.nifi:nifi-lang-groovy:${version}"
+}

@@ -7,8 +7,8 @@ Work-in-Progress
 ```
 The goal of this project is to enable processing NiFi *FlowFiles* using scripting languages.   
    
-1. **ExecuteJavaScript**        Usage: JSON -> Mapping -> JSON
-2. **ExecuteGroovy**:           Execute supplied groovy script with arguments configured. 
+1. **ExecuteJavaScript**        Execute supplied JavaScript  with arguments configured. Usage: JSON -> Mapping -> JSON
+2. **ExecuteGroovy**:           Execute supplied Groovy script with arguments configured. 
 3. **ExecuteRemoteProcess**:    Similar to **ExecuteProcess** but run on remote host. See [Groovy SSH](https://github.com/int128/groovy-ssh)
  
 ### Install

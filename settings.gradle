@@ -1,1 +1,6 @@
 rootProject.name = 'nifi-scripting'
+include 'nifi-sumo-common',
+        'nifi-lang-groovy',
+        'nifi-groovy-processors',
+        'nifi-execute-remote-processors',
+        'nifi-javascript-processors'

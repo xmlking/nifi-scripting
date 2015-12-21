@@ -1,0 +1,7 @@
+description = 'NiFi Groovy Language Support'
+
+apply plugin: 'maven'
+
+dependencies {
+    compile "org.codehaus.groovy:groovy-all:${groovyVersion}"
+}
