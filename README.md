@@ -97,6 +97,11 @@ ssh.run {
 }
 ```
 
+### Build 
+```bash
+gradle nifi-scripting:nifi-lang-groovy install
+gradle nar
+```
 ### TODO
 1. Support adding popular javaScript libraries (lodash.js, moment.js etc.,) via processor configuration.
 1. ExecuteRemoteProcess: add expression language support for RUN_DSL.
