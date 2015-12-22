@@ -114,6 +114,8 @@ public class ExecuteJavaScript extends AbstractProcessor {
         binding.put("session", session);
         binding.put("flowFile", incoming);
         binding.put("log", log);
+        binding.put("SUCCESS", REL_SUCCESS);
+        binding.put("FAILURE", REL_FAILURE);
         binding.put("util", new NiFiUtils());
 
         try {

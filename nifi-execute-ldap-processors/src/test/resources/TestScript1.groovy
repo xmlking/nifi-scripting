@@ -1,8 +1,5 @@
-import com.crossbusiness.nifi.processors.ExecuteGroovyLdap
 import groovy.json.JsonOutput
-import com.crossbusiness.nifi.processors.NiFiUtils
 
-util = new NiFiUtils()
 log.info("ldap : " + ldap.url)
 
 params  = [:]
@@ -17,7 +14,7 @@ ldap.eachEntry (params) { entry ->
 
     ff = util.stringToFlowFile(JsonOutput.toJson(attbs), session)
     ff = session.putAllAttributes(ff,attbs)
-    session.transfer(ff, ExecuteGroovyLdap.REL_SUCCESS);
+    session.transfer(ff, SUCCESS);
 }
 
 // if there is an incoming flowFile, then replace it with new outgoing flowFile,

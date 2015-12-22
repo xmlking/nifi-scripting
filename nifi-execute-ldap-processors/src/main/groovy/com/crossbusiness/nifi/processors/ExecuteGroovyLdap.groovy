@@ -138,6 +138,9 @@ public class ExecuteGroovyLdap extends AbstractProcessor {
         binding.setVariable("flowFile", incoming);
         binding.setVariable("ldap", ldap);
         binding.setVariable("log", log);
+        binding.setVariable("SUCCESS", REL_SUCCESS);
+        binding.setVariable("FAILURE", REL_FAILURE);
+        binding.setVariable("util", new NiFiUtils());
 
         try {
             final StopWatch stopWatch = new StopWatch(true);
