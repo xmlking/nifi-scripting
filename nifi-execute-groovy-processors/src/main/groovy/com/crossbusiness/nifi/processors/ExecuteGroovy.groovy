@@ -1,7 +1,6 @@
 package com.crossbusiness.nifi.processors
 
 import groovy.transform.CompileStatic
-import org.apache.directory.groovyldap.LDAP
 import org.apache.nifi.annotation.behavior.EventDriven
 import org.apache.nifi.annotation.behavior.InputRequirement
 import org.apache.nifi.annotation.behavior.InputRequirement.Requirement
@@ -14,7 +13,6 @@ import org.apache.nifi.flowfile.FlowFile
 import org.apache.nifi.logging.ProcessorLog
 import org.apache.nifi.processor.*
 import org.apache.nifi.processor.exception.ProcessException
-import org.apache.nifi.processor.util.StandardValidators
 import org.apache.nifi.util.StopWatch
 
 import java.util.concurrent.TimeUnit
@@ -22,10 +20,9 @@ import java.util.concurrent.TimeUnit
 @CompileStatic
 @EventDriven
 @InputRequirement(Requirement.INPUT_ALLOWED)
-@Tags(["command", "process", "source", "ldap", "invoke", "search", "groovy", "script"])
-@CapabilityDescription('''Runs Groovy script with LDAP binding.
-                          User supplied script can assign any data to flowFile that can be passed to next processor.''')
-public class ExecuteGroovyLdap extends AbstractProcessor {
+@Tags(["command", "process", "source", "invoke", "groovy", "script"])
+@CapabilityDescription("Runs Groovy script. User supplied script can assign any data to flowFile that can be passed to next processor.")
+public class ExecuteGroovy extends AbstractProcessor {
 
     private Set<Relationship> relationships;
     private List<PropertyDescriptor> properties;
@@ -40,39 +37,18 @@ public class ExecuteGroovyLdap extends AbstractProcessor {
             .description("FlowFiles that were failed to process")
             .build();
 
-    public static final PropertyDescriptor LDAP_URI = new PropertyDescriptor.Builder()
-            .name("LDAP URI")
-            .required(true)
-            .description("LDAP URI")
-            .addValidator(Validator.VALID)
-            .build();
-
-    public static final PropertyDescriptor LDAP_USERNAME = new PropertyDescriptor.Builder()
-            .name("LDAP Username")
-            .required(true)
-            .description("LDAP Username")
-            .addValidator(StandardValidators.NON_EMPTY_VALIDATOR)
-            .build();
-
-    public static final PropertyDescriptor LDAP_PASSWORD = new PropertyDescriptor.Builder()
-            .name("LDAP Password")
-            .required(true)
-            .description("LDAP Password")
-            .addValidator(Validator.VALID)
-            .sensitive(true)
-            .build();
 
     public static final PropertyDescriptor GROOVY_SCRIPT = new PropertyDescriptor.Builder()
-            .name("Groovy LDAP Script")
+            .name("Groovy Script")
             .required(true)
-            .description("Groovy LDAP script to execute")
+            .description("Groovy script to execute")
             .addValidator(Validator.VALID)
             .build();
 
     public static final PropertyDescriptor GROOVY_ARGS = new PropertyDescriptor.Builder()
             .name("Arguments")
             .required(false)
-            .description("Arguments to pass to Groovy script")
+            .description("Arguments to pass to Groovy")
             .addValidator(Validator.VALID)
             .expressionLanguageSupported(true)
             .defaultValue("")
@@ -96,21 +72,16 @@ public class ExecuteGroovyLdap extends AbstractProcessor {
         this.relationships = Collections.unmodifiableSet(relationships);
 
         final List<PropertyDescriptor> properties = new ArrayList<PropertyDescriptor>();
-        properties.add(LDAP_URI);
-        properties.add(LDAP_USERNAME);
-        properties.add(LDAP_PASSWORD);
         properties.add(GROOVY_SCRIPT);
         properties.add(GROOVY_ARGS);
         this.properties = Collections.unmodifiableList(properties);
     }
 
     private Script groovyScript;
-    private LDAP ldap;
 
     @OnScheduled
     public void setup(final ProcessContext context) {
         GroovyShell groovyShell = new GroovyShell();
-        ldap = LDAP.newInstance(context.getProperty(LDAP_URI).value, context.getProperty(LDAP_USERNAME).value, context.getProperty(LDAP_PASSWORD).value)
         groovyScript = groovyShell.parse(context.getProperty(GROOVY_SCRIPT).getValue());
     }
 
@@ -136,7 +107,6 @@ public class ExecuteGroovyLdap extends AbstractProcessor {
         binding.setVariable("args", args);
         binding.setVariable("session", session);
         binding.setVariable("flowFile", incoming);
-        binding.setVariable("ldap", ldap);
         binding.setVariable("log", log);
 
         try {

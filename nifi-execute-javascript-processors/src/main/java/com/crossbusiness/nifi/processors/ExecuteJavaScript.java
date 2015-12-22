@@ -1,6 +1,9 @@
 package com.crossbusiness.nifi.processors;
 
 import jdk.nashorn.api.scripting.NashornScriptEngineFactory;
+import org.apache.nifi.annotation.behavior.EventDriven;
+import org.apache.nifi.annotation.behavior.InputRequirement;
+import org.apache.nifi.annotation.behavior.InputRequirement.Requirement;
 import org.apache.nifi.annotation.lifecycle.OnScheduled;
 import org.apache.nifi.components.PropertyDescriptor;
 import org.apache.nifi.components.Validator;
@@ -17,6 +20,8 @@ import javax.script.ScriptException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
+@EventDriven
+@InputRequirement(Requirement.INPUT_ALLOWED)
 public class ExecuteJavaScript extends AbstractProcessor {
 
     private Set<Relationship> relationships;
@@ -87,9 +92,16 @@ public class ExecuteJavaScript extends AbstractProcessor {
 
     @Override
     public void onTrigger(ProcessContext context, ProcessSession session) throws ProcessException {
-        FlowFile flowFile = session.get();
-        if ( flowFile == null ) {
-            return;
+        FlowFile outgoing, incoming = null;
+        if (context.hasIncomingConnection()) {
+            incoming = session.get();
+
+            // If we have no FlowFile, and all incoming connections are self-loops then we can continue on.
+            // However, if we have no FlowFile and we have connections coming from other Processors, then
+            // we know that we should run only if we have a FlowFile.
+            if (incoming == null && context.hasNonLoopConnection()) {
+                return;
+            }
         }
 
         String[] args = context.getProperty(JAVASCRIPT_ARGS).evaluateAttributeExpressions().getValue().split(";");
@@ -100,7 +112,7 @@ public class ExecuteJavaScript extends AbstractProcessor {
         Bindings binding = compiledJavaScript.getEngine().createBindings();
         binding.put("args", args);
         binding.put("session", session);
-        binding.put("flowFile", flowFile);
+        binding.put("flowFile", incoming);
         binding.put("log", log);
         binding.put("util", new NiFiUtils());
 
@@ -110,13 +122,18 @@ public class ExecuteJavaScript extends AbstractProcessor {
 
             compiledJavaScript.eval(binding);
 
-            flowFile = (FlowFile) binding.get("flowFile");
-
-            log.info("Successfully processed flowFile {} ({}) in {} millis", new Object[]{flowFile, flowFile.getSize(), stopWatch.getElapsed(TimeUnit.MILLISECONDS)});
-            session.transfer(flowFile, REL_SUCCESS);
+            outgoing = (FlowFile) binding.get("flowFile");
+            if(outgoing != null) {
+                log.info("Successfully processed {} ({}) in {} millis", new Object[]{outgoing, outgoing.getSize(), stopWatch.getElapsed(TimeUnit.MILLISECONDS)});
+                session.transfer(outgoing, REL_SUCCESS);
+            }
         } catch (ProcessException | ScriptException pe) {
-            log.error("Failed to process flowFile {} due to {}; routing to failure", new Object[] {flowFile, pe.toString()}, pe);
-            session.transfer(flowFile, REL_FAILURE);
+            if (incoming == null) {
+                log.error("Unable to process due to {}. No incoming flow file to route to failure", new Object[] {pe.toString()}, pe);
+            } else {
+                log.error("Failed to process {} due to {}; routing to failure", new Object[] {incoming, pe.toString()}, pe);
+                session.transfer(incoming, REL_FAILURE);
+            }
         }
     }
 }
