@@ -19,12 +19,12 @@ import static org.junit.Assert.assertTrue;
 public class TestExecuteLdapProcess {
 
     private TestRunner testRunner;
-    private InputStream content;
+    private String content;
 
     @Before
     public void init() {
         // Content to be mock a json file
-        content = new ByteArrayInputStream("{\"hello\":\"nifi rocks\"}".getBytes());
+        content = "{\"hello\":\"nifi rocks\"}"
 
         // Generate a test runner to mock a processor in a flow
         testRunner = TestRunners.newTestRunner(ExecuteGroovyLdap.class);
@@ -44,7 +44,8 @@ public class TestExecuteLdapProcess {
         testRunner.setProperty(ExecuteGroovyLdap.GROOVY_ARGS, "5;2");
 
         // Add the content to the runner
-        testRunner.enqueue(content);
+        testRunner.enqueue(content, [sumo:'dem']);
+//        testRunner.setIncomingConnection(false)
 
         // Run the enqueued content, it also takes an int = number of contents queued
         testRunner.run(1);

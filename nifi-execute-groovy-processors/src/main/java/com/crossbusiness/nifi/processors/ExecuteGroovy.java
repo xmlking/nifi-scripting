@@ -103,6 +103,7 @@ public class ExecuteGroovy extends AbstractProcessor {
         binding.setVariable("session", session);
         binding.setVariable("flowFile", flowFile);
         binding.setVariable("log", log);
+        binding.setVariable("util", new NiFiUtils());
 
         try {
             final StopWatch stopWatch = new StopWatch(true);

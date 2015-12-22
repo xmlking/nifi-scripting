@@ -5,6 +5,9 @@ import groovy.lang.GroovyShell;
 import groovy.lang.Script
 import groovy.transform.CompileStatic;
 import org.apache.directory.groovyldap.LDAP
+import org.apache.nifi.annotation.behavior.EventDriven
+import org.apache.nifi.annotation.behavior.InputRequirement
+import org.apache.nifi.annotation.behavior.InputRequirement.Requirement;
 import org.apache.nifi.annotation.behavior.TriggerSerially;
 import org.apache.nifi.annotation.documentation.CapabilityDescription;
 import org.apache.nifi.annotation.documentation.Tags;
@@ -25,6 +28,8 @@ import java.util.concurrent.TimeUnit;
 
 @CompileStatic
 @TriggerSerially
+@EventDriven
+@InputRequirement(Requirement.INPUT_ALLOWED)
 @Tags(["command", "process", "source", "ldap", "invoke", "search", "groovy", "script"])
 @CapabilityDescription('''Runs Groovy script with LDAP binding.
                           User supplied script can assign any data to flowFile that can be passed to next processor.''')
@@ -117,13 +122,20 @@ public class ExecuteGroovyLdap extends AbstractProcessor {
     }
 
 
-
     @Override
     public void onTrigger(ProcessContext context, ProcessSession session) throws ProcessException {
-        FlowFile flowFile = session.get();
-        if ( flowFile == null ) {
-            return;
+        FlowFile incoming, outgoing = null;
+        if (context.hasIncomingConnection()) {
+            incoming = session.get();
+
+            // If we have no FlowFile, and all incoming connections are self-loops then we can continue on.
+            // However, if we have no FlowFile and we have connections coming from other Processors, then
+            // we know that we should run only if we have a FlowFile.
+            if (incoming == null && context.hasNonLoopConnection()) {
+                return;
+            }
         }
+
 
         String[] args = context.getProperty(GROOVY_ARGS).evaluateAttributeExpressions().getValue().split(";");
         ProcessorLog log = getLogger();
@@ -132,21 +144,27 @@ public class ExecuteGroovyLdap extends AbstractProcessor {
         Binding binding = new Binding();
         binding.setVariable("args", args);
         binding.setVariable("session", session);
-        binding.setVariable("flowFile", flowFile);
+        binding.setVariable("flowFile", incoming);
         binding.setVariable("ldap", ldap);
         binding.setVariable("log", log);
+        binding.setVariable("util", new NiFiUtils());
 
         try {
             final StopWatch stopWatch = new StopWatch(true);
             groovyScript.setBinding(binding);
             groovyScript.run();
-            flowFile = (FlowFile) binding.getProperty("flowFile");
 
-            log.info("Successfully processed flowFile {} ({}) in {} millis", [flowFile, flowFile.getSize(), stopWatch.getElapsed(TimeUnit.MILLISECONDS)]);
-            session.transfer(flowFile, REL_SUCCESS);
+            outgoing = (FlowFile) binding.getProperty("flowFile");
+            if(outgoing != null) {
+                log.info("Successfully processed ${outgoing} (${outgoing.getSize()}) in ${stopWatch.getElapsed(TimeUnit.MILLISECONDS)} millis");
+                session.transfer(outgoing, REL_SUCCESS);
+            }
         } catch (ProcessException pe) {
-            log.error("Failed to process flowFile {} due to {}; routing to failure", [flowFile, pe.toString()], pe);
-            session.transfer(flowFile, REL_FAILURE);
+            if (incoming == null) {
+                logger.error("Unable to process due to ${pe.toString()}. No incoming flow file to route to failure", pe);
+            }
+            log.error("Unable to process ${incoming} due to ${pe.toString()}, routing to failure", pe);
+            session.transfer(incoming, REL_FAILURE);
         }
     }
 }

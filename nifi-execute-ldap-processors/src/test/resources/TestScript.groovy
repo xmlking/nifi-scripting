@@ -1,5 +1,3 @@
-import org.apache.nifi.processor.io.InputStreamCallback
-
 log.info("sumo")
 log.info("args: "  + args.toString())
 log.info("ldap : " + ldap.url)
