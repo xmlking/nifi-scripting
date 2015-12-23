@@ -7,25 +7,26 @@ Work-in-Progress
 ```
 The goal of this project is to enable processing NiFi *FlowFiles* using scripting languages.   
    
-1. **ExecuteJavaScript**        Execute supplied JavaScript  with arguments configured. Usage: JSON -> Mapping -> JSON
-2. **ExecuteGroovy**:           Execute supplied Groovy script with arguments configured. 
-3. **ExecuteRemoteProcess**:    Similar to **ExecuteProcess** but run on remote host. See [Groovy SSH](https://github.com/int128/groovy-ssh)
+1. **ExecuteJavaScript**        Execute supplied javaScript with arguments configured. Use case: JSON -> Mapping -> JSON
+2. **ExecuteGroovy**:           Execute supplied groovy script with arguments configured. 
+3. **ExecuteGroovyLdap**:       Provide configured LDAP object to the script. Execute supplied groovy script with arguments configured. See [Groovy LDAP](https://directory.apache.org/api/groovy-api/2-groovy-ldap-user-guide.html)
+4. **ExecuteRemoteProcess**:    Similar to NiFi built-in **ExecuteProcess** but run on remote host. See [Groovy SSH](https://github.com/int128/groovy-ssh)
  
-### Install
+### Install NiFi
 1. Manual: Download [Apache NiFi](https://nifi.apache.org/download.html) binaries and unpack to a folder. 
 2. On Mac: brew install nifi
 
-### Deploy
+### Deploy NAR files.
 ```bash
-# Assume you unpacked nifi-0.3.0-bin.zip to /Developer/Applications/nifi
+# Assume you unpacked nifi-0.4.1-bin.zip to /Developer/Applications/nifi
 ./gradlew clean deploy -Pnifi_home=/Developer/Applications/nifi
 ```
 On Mac 
 ```bash
-gradle clean deploy -Pnifi_home=/usr/local/Cellar/nifi/0.3.0/libexec
+gradle clean deploy -Pnifi_home=/usr/local/Cellar/nifi/0.4.1/libexec
 ```
 
-### Run
+### Start NiFi
 ```bash
 cd /Developer/Applications/nifi
 ./bin/nifi.sh  start
@@ -37,7 +38,7 @@ On Mac
 nifi start 
 nifi status  
 nifi stop 
-# Working Directory: /usr/local/Cellar/nifi/0.3.0/libexec
+# Working Directory: /usr/local/Cellar/nifi/0.4.1/libexec
 ```
 ### Testing 
 
