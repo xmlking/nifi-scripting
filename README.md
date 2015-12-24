@@ -103,6 +103,15 @@ ssh.run {
 gradle nifi-scripting:nifi-lang-groovy install
 gradle nar
 ```
+
+#### If you are using MapR hadoop distribution
+
+1. Follow steps [NiFi Hadoop Library for MapR](https://github.com/xmlking/mapr-nifi-hadoop-libraries-bundle)
+2. Set auth login config in $NIFI_HOME/conf/bootstrap.conf
+
+    `java.arg.15=-Djava.security.auth.login.config=/opt/mapr/conf/mapr.login.conf`
+
+
 ### TODO
 1. Support adding popular javaScript libraries (lodash.js, moment.js etc.,) via processor configuration.
 1. ExecuteRemoteProcess: add expression language support for RUN_DSL.
