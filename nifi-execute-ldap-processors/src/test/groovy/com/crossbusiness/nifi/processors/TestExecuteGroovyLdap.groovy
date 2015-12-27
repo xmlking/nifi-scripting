@@ -26,6 +26,8 @@ public class TestExecuteGroovyLdap {
     public void testThing() throws IOException {
 
         String groovyString = this.getClass().getResource( '/TestScript.groovy' ).text
+//        String groovyString = this.getClass().getResource( '/TestLdapConfigFlow.groovy' ).text
+//        String groovyString = this.getClass().getResource( '/TestLdapSchemaFlow.groovy' ).text
 
         // Add properites
         testRunner.setProperty(ExecuteGroovyLdap.LDAP_URI, "ldap://zanzibar:10389");
@@ -35,7 +37,7 @@ public class TestExecuteGroovyLdap {
         testRunner.setProperty(ExecuteGroovyLdap.GROOVY_ARGS, "5;2");
 
         // Add the content to the runner
-        testRunner.enqueue(content, [sumo:'dem']);
+        testRunner.enqueue(content, [host:'localhost',port:'389']);
 //        testRunner.setIncomingConnection(false)
 
         // Run the enqueued content, it also takes an int = number of contents queued
@@ -47,6 +49,7 @@ public class TestExecuteGroovyLdap {
         // All results were processed with out failure
         testRunner.assertQueueEmpty();
 
+        println results.size()
         assertTrue("1 match", results.size() == 1);
         MockFlowFile result = results.get(0);
 
