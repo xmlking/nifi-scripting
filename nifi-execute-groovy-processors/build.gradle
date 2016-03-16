@@ -4,8 +4,6 @@ apply plugin: 'groovy'
 
 dependencies {
     compileOnly "org.codehaus.groovy:groovy-all:${groovyVersion}"
-//    compile "org.codehaus.groovy:groovy-all:${groovyVersion}"
 
-    nar "org.apache.nifi:nifi-scripting-bundle:${nifiVersion}"
-
+    nar "org.apache.nifi:nifi-scripting-nar:${nifiVersion}"
 }

@@ -9,5 +9,5 @@ dependencies {
         exclude(group: 'org.codehaus.groovy', module: 'groovy-all')
     }
 
-    nar "org.apache.nifi:nifi-scripting-bundle:${nifiVersion}"
+    nar "org.apache.nifi:nifi-scripting-nar:${nifiVersion}"
 }
