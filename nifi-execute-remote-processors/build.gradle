@@ -3,10 +3,11 @@ description = 'NiFi Execute Remote Processor'
 apply plugin: 'groovy'
 
 dependencies {
-    provided project(':nifi-lang-groovy')
+    compileOnly "org.codehaus.groovy:groovy-all:${groovyVersion}"
+
     compile ("org.hidetake:groovy-ssh:1.1.8") {
         exclude(group: 'org.codehaus.groovy', module: 'groovy-all')
     }
 
-    nar "org.apache.nifi:nifi-lang-groovy:${version}"
+    nar "org.apache.nifi:nifi-scripting-bundle:${nifiVersion}"
 }

@@ -27,28 +27,14 @@ allprojects {
         mavenCentral()
         mavenLocal()
     }
-
-    // to add provided scope
-    configurations {
-        provided
-        testCompile.extendsFrom(provided)
-    }
-    sourceSets {
-        main {
-            compileClasspath += configurations.provided
-        }
-    }
 }
 
 def narProjects = subprojects - project(':nifi-sumo-common')
-def narLangProjects = project(':nifi-lang-groovy')
-def narProcessorProjects = narProjects - narLangProjects
 
 configure(narProjects) {
-    apply plugin: 'de.fanero.gradle.plugin.nar'
-}
 
-configure(narProcessorProjects) {
+    apply plugin: 'de.fanero.gradle.plugin.nar'
+
     dependencies {
         compile project(':nifi-sumo-common')
         compile "org.apache.nifi:nifi-api:${nifiVersion}"

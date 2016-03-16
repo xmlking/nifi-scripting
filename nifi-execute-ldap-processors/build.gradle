@@ -3,12 +3,11 @@ description = 'NiFi Execute LDAP Script Processor'
 apply plugin: 'groovy'
 
 dependencies {
-    provided project(':nifi-lang-groovy')
+    compileOnly "org.codehaus.groovy:groovy-all:${groovyVersion}"
 
 //    compile "org.apache.directory:groovyldap:latest.integration"
 //    compile "org.apache.directory.api:api-all:1.0.0-M32"
     compile fileTree(dir: 'lib', include: '*.jar')
 
-
-    nar "org.apache.nifi:nifi-lang-groovy:${version}"
+    nar "org.apache.nifi:nifi-scripting-bundle:${nifiVersion}"
 }

@@ -4,6 +4,7 @@ import org.apache.nifi.util.MockFlowFile
 import org.apache.nifi.util.TestRunner
 import org.apache.nifi.util.TestRunners
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 
 import static org.junit.Assert.assertTrue
@@ -23,6 +24,7 @@ public class TestExecuteRemoteProcess {
         runDsl = this.getClass().getResource( '/runDsl.groovy' ).text
     }
 
+    @Ignore
     @Test
     public void testThing() throws IOException {
 

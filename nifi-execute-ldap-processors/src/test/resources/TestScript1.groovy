@@ -7,6 +7,8 @@ params.base = 'ou=sumo,ou=demo,dc=cc,dc=com'
 params.scope = ldap.ONE
 params.filter = '(objectclass=*)'
 
+attbs = [:]
+
 ldap.eachEntry (params) { entry ->
     println "${entry.cn}   (${entry.dn})"
     attbs['cn'] = entry.cn
