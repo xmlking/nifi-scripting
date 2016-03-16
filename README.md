@@ -18,12 +18,12 @@ The goal of this project is to enable processing NiFi *FlowFiles* using scriptin
 
 ### Deploy NAR files.
 ```bash
-# Assume you unpacked nifi-0.4.1-bin.zip to /Developer/Applications/nifi
+# Assume you unpacked nifi-0.5.1-bin.zip to /Developer/Applications/nifi
 ./gradlew clean deploy -Pnifi_home=/Developer/Applications/nifi
 ```
 On Mac 
 ```bash
-gradle clean deploy -Pnifi_home=/usr/local/Cellar/nifi/0.4.1/libexec
+gradle clean deploy -Pnifi_home=/usr/local/Cellar/nifi/0.5.1/libexec
 ```
 
 ### Start NiFi
@@ -38,7 +38,7 @@ On Mac
 nifi start 
 nifi status  
 nifi stop 
-# Working Directory: /usr/local/Cellar/nifi/0.4.1/libexec
+# Working Directory: /usr/local/Cellar/nifi/0.5.1/libexec
 ```
 ### Testing 
 
@@ -100,7 +100,6 @@ ssh.run {
 
 ### Build 
 ```bash
-gradle nifi-scripting:nifi-lang-groovy install
 gradle nar
 ```
 
