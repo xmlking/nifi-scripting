@@ -87,7 +87,8 @@ flowFile = session.putAttribute(flowFile, "JS", 2222 );
 
 #### Using 3rd party libs with Groovy Script via @Grab
 > You need to copy Apache Ivy [JAR](http://ant.apache.org/ivy/download.cgi) to **NiFi/bin** for @Grab to work.
-Set your twitter's consumerKey, consumerSecret accessToken and secretToken in ExecuteScript's dynamic properties 
+
+Add your twitter's *consumerKey, consumerSecret accessToken and secretToken* to ExecuteScript's dynamic properties 
 
 ```Groovy
 @Grab('org.codehaus.groovy.modules.http-builder:http-builder:0.7')
