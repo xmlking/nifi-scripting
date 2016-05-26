@@ -7,7 +7,8 @@ NiFi Dynamic Script Executors
 
 You can still take advantage of **nifi-sumo-common** lib in scripting processors to convert `FlowFile <--> String`  
 
-How to use NiFiUtil?
+#### How to use NiFiUtil?
+
 1. Copy `nifi-sumo-common-x.y.z-SNAPSHOT.jar` from releases to  *Module Directory* set in the `ExecuteScript` Processor's properties. 
 2. Import `NiFiUtils` into `ExecuteScript`'s Script 
 ```groovy
