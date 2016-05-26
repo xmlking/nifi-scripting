@@ -87,26 +87,38 @@ flowFile = session.putAttribute(flowFile, "JS", 2222 );
 
 #### Using 3rd party libs with Groovy Script via @Grab
 > You need to copy Apache Ivy [JAR](http://ant.apache.org/ivy/download.cgi) to **NiFi/bin** for @Grab to work.
+Set your twitter's consumerKey, consumerSecret accessToken and secretToken in ExecuteScript's dynamic properties 
 
 ```Groovy
 @Grab('org.codehaus.groovy.modules.http-builder:http-builder:0.7')
 @Grab('oauth.signpost:signpost-core:1.2.1.2')
 @Grab('oauth.signpost:signpost-commonshttp4:1.2.1.2')
 
+import groovy.json.JsonOutput
 import groovyx.net.http.RESTClient
 import static groovyx.net.http.ContentType.*
+import org.apache.http.params.HttpConnectionParams
+import com.crossbusiness.nifi.processors.NiFiUtils as util
+
+//Access dynamic property
+consumerKey = consumerKey.value
+consumerSecret = consumerSecret.value
+accessToken = accessToken.value
+secretToken = secretToken.value
 
 def twitter = new RESTClient( 'https://api.twitter.com/1.1/statuses/' )
-twitter.auth.oauth "", "", "", ""
+twitter.auth.oauth  consumerKey, consumerSecret, accessToken, secretToken
+twitter.contentType = JSON
+HttpConnectionParams.setSoTimeout twitter.client.params, 15000
 
-try { // expect an exception from a 404 response:
-    twitter.head path: 'public_timeline'
-    assert false, 'Expected exception'
-}
-// The exception is used for flow control but has access to the response as well:
-catch( ex ) { assert ex.response.status == 404 }
+def resp = twitter.get( path: 'home_timeline.json' )
+assert resp.status == 200
+assert resp.contentType == JSON.toString()
+assert ( resp.data instanceof List )
+assert resp.data.status.size() > 0
 
-assert twitter.head( path: 'home_timeline.json' ).status == 200
+flowFile = util.stringToFlowFile(JsonOutput.toJson(resp.data), session);
+session.transfer(flowFile, REL_SUCCESS)
 ```
 
 #### ExecuteRemoteProcess testing
