@@ -7,6 +7,17 @@ NiFi Dynamic Script Executors
 
 You can still take advantage of **nifi-sumo-common** lib in scripting processors to convert `FlowFile <--> String`  
 
+How to use NiFiUtil?
+1. Copy `nifi-sumo-common-x.y.z-SNAPSHOT.jar` from releases to  *Module Directory* set in the `ExecuteScript` Processor's properties. 
+2. Import `NiFiUtils` into `ExecuteScript`'s Script 
+```groovy
+import com.crossbusiness.nifi.processors.NiFiUtils as util
+flowFile = util.stringToFlowFile("test 123", session);
+flowString = util.flowFileToString(flowFile, session)
+log.info "flowString: ${flowString}"
+session.transfer(flowFile, REL_SUCCESS)
+```
+
 The goal of this project is to enable processing NiFi *FlowFiles* using scripting languages.   
    
 1. **ExecuteJavaScript**        Execute supplied javaScript with arguments configured. Use case: JSON -> Mapping -> JSON
@@ -85,7 +96,7 @@ import groovyx.net.http.RESTClient
 import static groovyx.net.http.ContentType.*
 
 def twitter = new RESTClient( 'https://api.twitter.com/1.1/statuses/' )
-// twitter auth omitted
+twitter.auth.oauth "", "", "", ""
 
 try { // expect an exception from a 404 response:
     twitter.head path: 'public_timeline'
