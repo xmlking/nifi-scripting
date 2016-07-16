@@ -1,9 +1,0 @@
-description = 'NiFi Groovy Script Executor Processor'
-
-apply plugin: 'groovy'
-
-dependencies {
-    compileOnly "org.codehaus.groovy:groovy-all:${groovyVersion}"
-
-    nar "org.apache.nifi:nifi-scripting-nar:${nifiVersion}"
-}

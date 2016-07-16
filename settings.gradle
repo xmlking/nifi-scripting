@@ -1,6 +1,4 @@
 rootProject.name = 'nifi-scripting'
 include 'nifi-sumo-common',
-        'nifi-execute-groovy-processors',
         'nifi-execute-remote-processors',
-        'nifi-execute-ldap-processors',
-        'nifi-execute-javascript-processors'
+        'nifi-execute-ldap-processors'
