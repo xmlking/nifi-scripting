@@ -5,11 +5,14 @@ NiFi Dynamic Script Executors
 
 > **ExecuteJavaScript** and **ExecuteGroovy** are depricated since NiFi from version 0.5.1 includes **ExecuteScript** and **InvokeScriptProcessor**
 
-You can still take advantage of **nifi-sumo-common** lib in scripting processors to convert `FlowFile <--> String`  
+You can still take advantage of **nifi-sumo-common** lib in scripting processors, e.g., convert `FlowFile <--> String`
+
+### Using nifi-sumo-common lib in scripting processors
+
+1. Copy `nifi-sumo-common-x.y.x-SNAPSHOT.jar` from [releases](https://github.com/xmlking/nifi-scripting/releases) to  *Module Directory* set in the `ExecuteScript` Processor's properties. 
 
 #### How to use NiFiUtil?
 
-1. Copy `nifi-sumo-common-x.y.z-SNAPSHOT.jar` from releases to  *Module Directory* set in the `ExecuteScript` Processor's properties. 
 2. Import `NiFiUtils` into `ExecuteScript`'s Script 
 ```groovy
 import com.crossbusiness.nifi.processors.NiFiUtils as util
@@ -18,6 +21,33 @@ flowString = util.flowFileToString(flowFile, session)
 log.info "flowString: ${flowString}"
 session.transfer(flowFile, REL_SUCCESS)
 ```
+
+#### How to use distributed cache in scripting processors?
+
+2. Import `StringSerDe` or `LongSerDe` etc., into `ExecuteScript`'s Script 
+
+```groovy
+import org.apache.nifi.controller.ControllerService
+import com.crossbusiness.nifi.processors.StringSerDe
+
+final StringSerDe stringSerDe = new StringSerDe();
+
+def lookup = context.controllerServiceLookup
+def cacheServiceName = DistributedMapCacheClientServiceName.value
+
+log.error  "cacheServiceName: ${cacheServiceName}"
+
+def cacheServiceId = lookup.getControllerServiceIdentifiers(ControllerService).find {
+    cs -> lookup.getControllerServiceName(cs) == cacheServiceName
+}
+
+log.error  "cacheServiceId:  ${cacheServiceId}"
+
+def cache = lookup.getControllerService(cacheServiceId)
+log.error cache.get("aaa", stringSerDe, stringSerDe )
+```
+
+
 
 The goal of this project is to enable processing NiFi *FlowFiles* using scripting languages.   
    
@@ -56,6 +86,7 @@ nifi start
 nifi status  
 nifi stop
 ```
+
 ### Testing 
 
 Upload the [sample flow](./scripting-flow.xml) into NiFi and use [test data](./src/test/resources/test.json) and below javascript for testing:
@@ -176,3 +207,4 @@ gradle nar
 4. [Groovy SSH](https://github.com/int128/groovy-ssh)
 5. See [document of Gradle SSH Plugin](https://gradle-ssh-plugin.github.io/docs/) for details of DSL.
 6. Groovy Goodness: [Store Closures in Script Binding](http://mrhaki.blogspot.com/2010/08/groovy-goodness-store-closures-in.html)
+7. Matt Burgess's Blog: [Fun with Apache NiFi](http://funnifi.blogspot.com/)
