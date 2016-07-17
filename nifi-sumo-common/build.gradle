@@ -1,12 +1,8 @@
-plugins {
-    id 'com.github.johnrengelman.shadow' version '1.2.3'
-}
-
 description = 'NiFi Commons / Utils'
 
 dependencies {
-    compileOnly "org.apache.nifi:nifi-api:${nifiVersion}"
-    compileOnly "org.apache.nifi:nifi-processor-utils:${nifiVersion}"
+    compile "org.apache.nifi:nifi-api:${nifiVersion}"
+    compile "org.apache.nifi:nifi-processor-utils:${nifiVersion}"
     compile "org.apache.nifi:nifi-distributed-cache-client-service-api:${nifiVersion}"
 }
 
