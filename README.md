@@ -7,47 +7,6 @@ NiFi Dynamic Script Executors
 
 You can still take advantage of **nifi-sumo-common** lib in scripting processors, e.g., convert `FlowFile <--> String`
 
-### Using nifi-sumo-common lib in scripting processors
-
-1. Copy `nifi-sumo-common-x.y.x-SNAPSHOT.jar` from [releases](https://github.com/xmlking/nifi-scripting/releases) to  *Module Directory* set in the `ExecuteScript` Processor's properties. 
-
-#### How to use NiFiUtil?
-
-2. Import `NiFiUtils` into `ExecuteScript`'s Script 
-```groovy
-import com.crossbusiness.nifi.processors.NiFiUtils as util
-flowFile = util.stringToFlowFile("test 123", session);
-flowString = util.flowFileToString(flowFile, session)
-log.info "flowString: ${flowString}"
-session.transfer(flowFile, REL_SUCCESS)
-```
-
-#### How to use distributed cache in scripting processors?
-
-2. Import `StringSerDe` or `LongSerDe` etc., into `ExecuteScript`'s Script 
-
-```groovy
-import org.apache.nifi.controller.ControllerService
-import com.crossbusiness.nifi.processors.StringSerDe
-
-final StringSerDe stringSerDe = new StringSerDe();
-
-def lookup = context.controllerServiceLookup
-def cacheServiceName = DistributedMapCacheClientServiceName.value
-
-log.error  "cacheServiceName: ${cacheServiceName}"
-
-def cacheServiceId = lookup.getControllerServiceIdentifiers(ControllerService).find {
-    cs -> lookup.getControllerServiceName(cs) == cacheServiceName
-}
-
-log.error  "cacheServiceId:  ${cacheServiceId}"
-
-def cache = lookup.getControllerService(cacheServiceId)
-log.error cache.get("aaa", stringSerDe, stringSerDe )
-```
-
-
 
 The goal of this project is to enable processing NiFi *FlowFiles* using scripting languages.   
    
@@ -152,6 +111,48 @@ assert resp.data.status.size() > 0
 flowFile = util.stringToFlowFile(JsonOutput.toJson(resp.data), session);
 session.transfer(flowFile, REL_SUCCESS)
 ```
+
+
+### Using `nifi-sumo-common` lib in scripting processors
+
+1. Copy `nifi-sumo-common-x.y.x-SNAPSHOT.jar` from [releases](https://github.com/xmlking/nifi-scripting/releases) to  *Module Directory* set in the `ExecuteScript` Processor's properties. 
+
+#### How to use NiFiUtil?
+
+2. Import `NiFiUtils` into `ExecuteScript`'s Script 
+```groovy
+import com.crossbusiness.nifi.processors.NiFiUtils as util
+flowFile = util.stringToFlowFile("test 123", session);
+flowString = util.flowFileToString(flowFile, session)
+log.info "flowString: ${flowString}"
+session.transfer(flowFile, REL_SUCCESS)
+```
+
+#### How to use distributed cache in scripting processors?
+
+2. Import `StringSerDe` or `LongSerDe` etc., into `ExecuteScript`'s Script 
+
+```groovy
+import org.apache.nifi.controller.ControllerService
+import com.crossbusiness.nifi.processors.StringSerDe
+
+final StringSerDe stringSerDe = new StringSerDe();
+
+def lookup = context.controllerServiceLookup
+def cacheServiceName = DistributedMapCacheClientServiceName.value
+
+log.error  "cacheServiceName: ${cacheServiceName}"
+
+def cacheServiceId = lookup.getControllerServiceIdentifiers(ControllerService).find {
+    cs -> lookup.getControllerServiceName(cs) == cacheServiceName
+}
+
+log.error  "cacheServiceId:  ${cacheServiceId}"
+
+def cache = lookup.getControllerService(cacheServiceId)
+log.error cache.get("aaa", stringSerDe, stringSerDe )
+```
+
 
 #### ExecuteRemoteProcess testing
 
