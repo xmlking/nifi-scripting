@@ -118,6 +118,7 @@ session.transfer(flowFile, REL_SUCCESS)
 #### How to use NiFiUtil?
 
 2. Import `NiFiUtils` into `ExecuteScript`'s Script 
+
 ```groovy
 import com.crossbusiness.nifi.processors.NiFiUtils as util
 flowFile = util.stringToFlowFile("test 123", session);
