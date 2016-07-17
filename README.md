@@ -1,6 +1,11 @@
 NiFi-Scripting
 --------------
-NiFi Dynamic Script Executors
+The goal of this project is to enable processing NiFi *FlowFiles* using scripting languages.   
+   
+1. **ExecuteJavaScript**        Execute supplied javaScript with arguments configured. Use case: JSON -> Mapping -> JSON
+2. **ExecuteGroovy**:           Execute supplied groovy script with arguments configured. 
+3. **ExecuteGroovyLdap**:       Provide configured LDAP object to the script. Execute supplied groovy script with arguments configured. See [Groovy LDAP](https://directory.apache.org/api/groovy-api/2-groovy-ldap-user-guide.html)
+4. **ExecuteRemoteProcess**:    Similar to NiFi built-in **ExecuteProcess** but run on remote host. See [Groovy SSH](https://github.com/int128/groovy-ssh)
 
 
 > **ExecuteJavaScript** and **ExecuteGroovy** are depricated since NiFi from version 0.5.1 includes **ExecuteScript** and **InvokeScriptProcessor**
@@ -8,13 +13,6 @@ NiFi Dynamic Script Executors
 You can still take advantage of **nifi-sumo-common** lib in scripting processors, e.g., convert `FlowFile <--> String`
 
 
-The goal of this project is to enable processing NiFi *FlowFiles* using scripting languages.   
-   
-1. **ExecuteJavaScript**        Execute supplied javaScript with arguments configured. Use case: JSON -> Mapping -> JSON
-2. **ExecuteGroovy**:           Execute supplied groovy script with arguments configured. 
-3. **ExecuteGroovyLdap**:       Provide configured LDAP object to the script. Execute supplied groovy script with arguments configured. See [Groovy LDAP](https://directory.apache.org/api/groovy-api/2-groovy-ldap-user-guide.html)
-4. **ExecuteRemoteProcess**:    Similar to NiFi built-in **ExecuteProcess** but run on remote host. See [Groovy SSH](https://github.com/int128/groovy-ssh)
- 
 ### Install NiFi
 1. Manual: Download [Apache NiFi](https://nifi.apache.org/download.html) binaries and unpack to a folder. 
 2. On Mac: brew install nifi
